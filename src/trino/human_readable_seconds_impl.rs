@@ -17,26 +17,30 @@
 
 #![allow(non_camel_case_types)]
 use arrow::datatypes::DataType;
-use datafusion::common::Result;
-use datafusion::error::DataFusionError;
+use datafusion::common::{internal_err, Result, ScalarValue};
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
+use std::time::Duration;
+use humantime::format_duration;
 
-fn human_readable_seconds_double_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn human_readable_seconds_double_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    match &args[0] {
+        ColumnarValue::Scalar(ScalarValue::Int64(Some(v))) => {
+            let duration = Duration::from_secs(v.clone() as u64);
+            let formatted_duration = format_duration(duration).to_string();
+            Ok(ColumnarValue::Scalar(ScalarValue::Utf8(
+                Some(formatted_duration),
+            )))
+        }
+        _ => {
+            internal_err!("Invalid argument types to human_readable_seconds function")
+        }
+    }
 }
 
 fn human_readable_seconds_double_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+    Ok(DataType::Utf8)
 }
 
 fn human_readable_seconds_double_simplify(
