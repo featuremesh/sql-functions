@@ -18,25 +18,17 @@
 #![allow(non_camel_case_types)]
 use arrow::datatypes::DataType;
 use datafusion::common::Result;
-use datafusion::error::DataFusionError;
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
+use datafusion::functions_nested::extract::array_element_udf;
 
-fn element_at_map_4_5_4_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn element_at_map_4_5_4_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    array_element_udf().invoke(args)
 }
 
-fn element_at_map_4_5_4_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn element_at_map_4_5_4_return_type(arg_types: &[DataType]) -> Result<DataType> {
+    array_element_udf().inner().return_type(arg_types)
 }
 
 fn element_at_map_4_5_4_simplify(
@@ -46,20 +38,12 @@ fn element_at_map_4_5_4_simplify(
     Ok(ExprSimplifyResult::Original(args))
 }
 
-fn element_at_array_3_bigint_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn element_at_array_3_bigint_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    array_element_udf().invoke(args)
 }
 
-fn element_at_array_3_bigint_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn element_at_array_3_bigint_return_type(arg_types: &[DataType]) -> Result<DataType> {
+    array_element_udf().inner().return_type(arg_types)
 }
 
 fn element_at_array_3_bigint_simplify(
