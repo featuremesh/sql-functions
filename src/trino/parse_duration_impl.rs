@@ -16,27 +16,29 @@
 // under the License.
 
 #![allow(non_camel_case_types)]
-use arrow::datatypes::DataType;
-use datafusion::common::Result;
-use datafusion::error::DataFusionError;
+use arrow::datatypes::{DataType, IntervalUnit};
+use datafusion::common::{internal_err, Result, ScalarValue};
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
+use arrow::compute::kernels::cast_utils::parse_interval_month_day_nano;
 
-fn parse_duration_varchar_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn parse_duration_varchar_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    match &args[0] {
+        ColumnarValue::Scalar(ScalarValue::Utf8(Some(v))) => {
+            let interval = parse_interval_month_day_nano(v.as_str())?;
+            Ok(ColumnarValue::Scalar(ScalarValue::IntervalMonthDayNano(
+                Some(interval),
+            )))
+        }
+        _ => {
+            internal_err!("Invalid argument types to parse_duration function")
+        }
+    }
 }
 
 fn parse_duration_varchar_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+    Ok(DataType::Interval(IntervalUnit::DayTime))
 }
 
 fn parse_duration_varchar_simplify(
