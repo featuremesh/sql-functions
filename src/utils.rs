@@ -104,7 +104,7 @@ pub(super) fn apply_datepart_kernel(arg: &ColumnarValue, part: DatePart) -> Resu
     apply_unary_kernel(arg, move |arr| {
         let res = date_part(arr, part)?;
         // DF date_part returns Int32, but Trino needs Int64
-        Ok(cast(&res, &DataType::Int64)?)
+        cast(&res, &DataType::Int64)
     })
 }
 
@@ -116,7 +116,7 @@ pub(super) fn apply_dow_kernel(arg: &ColumnarValue) -> Result<ColumnarValue> {
         let one = arrow::array::Int32Array::new_scalar(1);
         let monday1 = arrow::compute::kernels::numeric::add(&monday0, &one)?;
         // DF date_part returns Int32, but Trino needs Int64
-        Ok(cast(&monday1, &DataType::Int64)?)
+        cast(&monday1, &DataType::Int64)
     })
 }
 
@@ -268,7 +268,7 @@ pub trait KernelLifter {
                 Some(lst) => {
                     let typ_lst = lst.as_boolean();
                     if typ_lst.null_count() > 0 {
-                        return None; // A Trino quirk? If a NULL is present, array_min,max are NULL.
+                        None// A Trino quirk? If a NULL is present, array_min,max are NULL.
                     } else {
                         Self::boolean_kernel(typ_lst)
                     }

@@ -30,7 +30,7 @@ fn if_boolean_1_1_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
     let conditions = as_boolean_array(&args[0])?;
     let left = args[1].to_owned();
     let right = args[2].to_owned();
-    let result = zip(&conditions, &left, &right)?;
+    let result = zip(conditions, &left, &right)?;
     Ok(ColumnarValue::Array(Arc::new(result)))
 }
 

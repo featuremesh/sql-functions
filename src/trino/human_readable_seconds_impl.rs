@@ -20,18 +20,18 @@ use arrow::datatypes::DataType;
 use datafusion::common::{internal_err, Result, ScalarValue};
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
+use humantime::format_duration;
 use std::any::Any;
 use std::time::Duration;
-use humantime::format_duration;
 
 fn human_readable_seconds_double_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
     match &args[0] {
         ColumnarValue::Scalar(ScalarValue::Int64(Some(v))) => {
-            let duration = Duration::from_secs(v.clone() as u64);
+            let duration = Duration::from_secs(*v as u64);
             let formatted_duration = format_duration(duration).to_string();
-            Ok(ColumnarValue::Scalar(ScalarValue::Utf8(
-                Some(formatted_duration),
-            )))
+            Ok(ColumnarValue::Scalar(ScalarValue::Utf8(Some(
+                formatted_duration,
+            ))))
         }
         _ => {
             internal_err!("Invalid argument types to human_readable_seconds function")

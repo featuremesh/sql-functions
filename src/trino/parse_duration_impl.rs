@@ -16,12 +16,12 @@
 // under the License.
 
 #![allow(non_camel_case_types)]
+use arrow::compute::kernels::cast_utils::parse_interval_month_day_nano;
 use arrow::datatypes::{DataType, IntervalUnit};
 use datafusion::common::{internal_err, Result, ScalarValue};
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
-use arrow::compute::kernels::cast_utils::parse_interval_month_day_nano;
 
 fn parse_duration_varchar_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
     match &args[0] {
