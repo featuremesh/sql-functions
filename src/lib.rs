@@ -19,7 +19,7 @@ pub struct Asset;
 
 impl Asset {
     pub fn load_file(filename: &str) -> Option<EmbeddedFile> {
-        Self::get(filename.as_ref())
+        Self::get(filename)
     }
 }
 

@@ -171,7 +171,7 @@ fn date_diff_varchar_time_p_time_p_invoke(args: &[ColumnarValue]) -> Result<Colu
             .collect::<Vec<_>>(),
         DataType::Time32(TimeUnit::Millisecond) => as_time32_millisecond_array(start.as_ref())?
             .into_iter()
-            .map(|v| v.map(|v| v as i64 * 1))
+            .map(|v| v.map(|v| v as i64))
             .collect::<Vec<_>>(),
         DataType::Time64(TimeUnit::Microsecond) => as_time64_microsecond_array(start.as_ref())?
             .into_iter()
@@ -191,7 +191,7 @@ fn date_diff_varchar_time_p_time_p_invoke(args: &[ColumnarValue]) -> Result<Colu
             .collect::<Vec<_>>(),
         DataType::Time32(TimeUnit::Millisecond) => as_time32_millisecond_array(end.as_ref())?
             .into_iter()
-            .map(|v| v.map(|v| v as i64 * 1))
+            .map(|v| v.map(|v| v as i64))
             .collect::<Vec<_>>(),
         DataType::Time64(TimeUnit::Microsecond) => as_time64_microsecond_array(end.as_ref())?
             .into_iter()
@@ -221,7 +221,7 @@ fn date_diff_varchar_time_p_time_p_invoke(args: &[ColumnarValue]) -> Result<Colu
                     DatePart::Hour => Ok(Some((end - start) / 3_600_000)),
                     DatePart::Minute => Ok(Some((end - start) / 60_000)),
                     DatePart::Second => Ok(Some((end - start) / 1_000)),
-                    DatePart::Millisecond => Ok(Some((end - start) / 1)),
+                    DatePart::Millisecond => Ok(Some(end - start)),
                     _ => Ok(None),
                 }
             } else {
@@ -280,7 +280,7 @@ fn date_diff_varchar_timestamp_p_timestamp_p_invoke(
         DataType::Timestamp(TimeUnit::Millisecond, _) => {
             as_timestamp_millisecond_array(start.as_ref())?
                 .into_iter()
-                .map(|v| v.map(|v| v * 1))
+                .map(|v| v)
                 .collect::<Vec<_>>()
         }
         DataType::Timestamp(TimeUnit::Microsecond, _) => {
@@ -306,7 +306,7 @@ fn date_diff_varchar_timestamp_p_timestamp_p_invoke(
         DataType::Timestamp(TimeUnit::Millisecond, _) => {
             as_timestamp_millisecond_array(end.as_ref())?
                 .into_iter()
-                .map(|v| v.map(|v| v * 1))
+                .map(|v| v)
                 .collect::<Vec<_>>()
         }
         DataType::Timestamp(TimeUnit::Microsecond, _) => {
@@ -416,7 +416,7 @@ fn date_diff_varchar_timestamp_p_timestamp_p_invoke(
                     DatePart::Hour => Ok(Some((end - start) / 3_600_000)),
                     DatePart::Minute => Ok(Some((end - start) / 60_000)),
                     DatePart::Second => Ok(Some((end - start) / 1_000)),
-                    DatePart::Millisecond => Ok(Some((end - start) / 1)),
+                    DatePart::Millisecond => Ok(Some(end - start)),
                     DatePart::Microsecond | DatePart::Nanosecond => {
                         exec_err!("Date part '{part}' is not a valid TIMESTAMP field")
                     }

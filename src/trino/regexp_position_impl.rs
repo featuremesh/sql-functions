@@ -89,7 +89,7 @@ fn regexp_position__rowfun2(
             // but only when start is "well past" the end of str
             // (e.g., for str="", must be start >= 3, for "abc" and pattern "b", start >= 6).
         }
-        let res = re.find_at(str, (start - 1) as usize);
+        let res = re.find_at(str, start - 1);
         match res {
             None => -1,
             Some(m) => m.start() as i64 + 1,
@@ -141,7 +141,7 @@ fn regexp_position__rowfun3(
             // but only when start is "well past" the end of str
             // (e.g., for str="", must be start >= 3, for "abc" and pattern "b", start >= 6).
         }
-        if !str.is_char_boundary((start - 1) as usize) {
+        if !str.is_char_boundary(start - 1) {
             return -1;
         };
         if occ < 1 {

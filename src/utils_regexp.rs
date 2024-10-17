@@ -80,10 +80,7 @@ where
                 let haystack = as_string_array(&hay_arr)?;
                 let res = haystack
                     .iter()
-                    .map(|hay_opt| match hay_opt {
-                        Some(hay) => Some(regfun(hay)),
-                        _ => None,
-                    })
+                    .map(|hay_opt| hay_opt.map(|hay| regfun(hay)))
                     .collect::<Int64Array>();
                 Arc::new(res) as ArrayRef
             }
@@ -328,10 +325,7 @@ where
                 let haystack = as_string_array(&hay_arr)?;
                 let res = haystack
                     .iter()
-                    .map(|hay_opt| match hay_opt {
-                        Some(hay) => Some(regfun(hay)),
-                        _ => None,
-                    })
+                    .map(|hay_opt| hay_opt.map(|hay| regfun(hay)))
                     .collect::<StringArrayExt>();
                 Arc::new(res.into_string_array()) as ArrayRef
             }
@@ -444,10 +438,7 @@ where
                 let haystack = as_string_array(&hay_arr)?;
                 let res = haystack
                     .iter()
-                    .map(|hay_opt| match hay_opt {
-                        Some(hay) => Some(regfun(hay)),
-                        _ => None,
-                    })
+                    .map(|hay_opt| hay_opt.map(|hay| regfun(hay)))
                     .collect::<ListArrayExt>();
                 Arc::new(res.into_list_array()) as ArrayRef
             }

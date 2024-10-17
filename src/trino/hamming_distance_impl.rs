@@ -73,16 +73,17 @@ fn hamming<T: OffsetSizeTrait>(args: &[ArrayRef]) -> Result<ArrayRef> {
 }
 
 fn hamming_distance(s1: &str, s2: &str) -> usize {
-    s1.chars().zip(s2.chars()).filter(|(c1, c2)| c1 != c2).count()
+    s1.chars()
+        .zip(s2.chars())
+        .filter(|(c1, c2)| c1 != c2)
+        .count()
 }
-
 
 fn hamming_distance_varchar_varchar_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
     match args[0].data_type() {
         DataType::Utf8View | DataType::Utf8 => make_scalar_function(hamming::<i32>, vec![])(args),
         DataType::LargeUtf8 => make_scalar_function(hamming::<i64>, vec![])(args),
-        other => exec_err!("Unsupported data type {other:?} for function hamming")
-
+        other => exec_err!("Unsupported data type {other:?} for function hamming"),
     }
 }
 
@@ -90,7 +91,7 @@ fn hamming_distance_varchar_varchar_return_type(arg_types: &[DataType]) -> Resul
     match &arg_types[0] {
         DataType::Utf8View | DataType::Utf8 => Ok(DataType::Int32),
         DataType::LargeUtf8 => Ok(DataType::Int64),
-        other => exec_err!("Unsupported data type {other:?} for function hamming")
+        other => exec_err!("Unsupported data type {other:?} for function hamming"),
     }
 }
 

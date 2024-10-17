@@ -33,10 +33,7 @@ fn cardinality_array_3_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
         let list_array = as_list_array(array)?;
         let result = list_array
             .iter()
-            .map(|item| match item {
-                Some(arr) => Some(arr.len() as u64),
-                None => None, // NULL
-            })
+            .map(|item| item.map(|arr| arr.len() as u64))
             .collect::<UInt64Array>();
         Ok(Arc::new(result) as ArrayRef)
     })
@@ -45,9 +42,7 @@ fn cardinality_array_3_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
 fn cardinality_array_3_return_type(arg_types: &[DataType]) -> Result<DataType> {
     match arg_types[0] {
         DataType::List(_) => Ok(DataType::UInt64),
-        _ => Err(DataFusionError::Plan(format!(
-            "The cardinality function only accepts List."
-        ))),
+        _ => Err(DataFusionError::Plan("The cardinality function only accepts List.".to_string())),
     }
 }
 
