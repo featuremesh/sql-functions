@@ -16,27 +16,82 @@
 // under the License.
 
 #![allow(non_camel_case_types)]
+use crate::utils::make_scalar_function;
+use arrow::array::{Array, ArrayRef, Int32Array, Int64Array, OffsetSizeTrait};
 use arrow::datatypes::DataType;
-use datafusion::common::Result;
-use datafusion::error::DataFusionError;
+use datafusion::common::cast::as_generic_string_array;
+use datafusion::common::{exec_err, Result};
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
+use std::sync::Arc;
 
-fn hamming_distance_varchar_varchar_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn hamming<T: OffsetSizeTrait>(args: &[ArrayRef]) -> Result<ArrayRef> {
+    if args.len() != 2 {
+        return exec_err!(
+            "hamming function requires two arguments, got {}",
+            args.len()
+        );
+    }
+
+    let str1_array = as_generic_string_array::<T>(&args[0])?;
+    let str2_array = as_generic_string_array::<T>(&args[1])?;
+
+    match args[0].data_type() {
+        DataType::Utf8View | DataType::Utf8 => {
+            let result = str1_array
+                .iter()
+                .zip(str2_array.iter())
+                .map(|(string1, string2)| match (string1, string2) {
+                    (Some(string1), Some(string2)) => {
+                        Some(hamming_distance(string1, string2) as i32)
+                    }
+                    _ => None,
+                })
+                .collect::<Int32Array>();
+            Ok(Arc::new(result) as ArrayRef)
+        }
+        DataType::LargeUtf8 => {
+            let result = str1_array
+                .iter()
+                .zip(str2_array.iter())
+                .map(|(string1, string2)| match (string1, string2) {
+                    (Some(string1), Some(string2)) => {
+                        Some(hamming_distance(string1, string2) as i64)
+                    }
+                    _ => None,
+                })
+                .collect::<Int64Array>();
+            Ok(Arc::new(result) as ArrayRef)
+        }
+        other => {
+            exec_err!(
+                "hamming was called with {other} datatype arguments. It requires Utf8View, Utf8 or LargeUtf8."
+            )
+        }
+    }
 }
 
-fn hamming_distance_varchar_varchar_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn hamming_distance(s1: &str, s2: &str) -> usize {
+    s1.chars().zip(s2.chars()).filter(|(c1, c2)| c1 != c2).count()
+}
+
+
+fn hamming_distance_varchar_varchar_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    match args[0].data_type() {
+        DataType::Utf8View | DataType::Utf8 => make_scalar_function(hamming::<i32>, vec![])(args),
+        DataType::LargeUtf8 => make_scalar_function(hamming::<i64>, vec![])(args),
+        other => exec_err!("Unsupported data type {other:?} for function hamming")
+
+    }
+}
+
+fn hamming_distance_varchar_varchar_return_type(arg_types: &[DataType]) -> Result<DataType> {
+    match &arg_types[0] {
+        DataType::Utf8View | DataType::Utf8 => Ok(DataType::Int32),
+        DataType::LargeUtf8 => Ok(DataType::Int64),
+        other => exec_err!("Unsupported data type {other:?} for function hamming")
+    }
 }
 
 fn hamming_distance_varchar_varchar_simplify(
