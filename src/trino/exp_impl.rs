@@ -18,25 +18,17 @@
 #![allow(non_camel_case_types)]
 use arrow::datatypes::DataType;
 use datafusion::common::Result;
-use datafusion::error::DataFusionError;
+use datafusion::functions::math::exp;
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
 
-fn exp_double_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn exp_double_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    exp().invoke(args)
 }
 
-fn exp_double_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn exp_double_return_type(arg_types: &[DataType]) -> Result<DataType> {
+    exp().inner().return_type(arg_types)
 }
 
 fn exp_double_simplify(args: Vec<Expr>, _info: &dyn SimplifyInfo) -> Result<ExprSimplifyResult> {
