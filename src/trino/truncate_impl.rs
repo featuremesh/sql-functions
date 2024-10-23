@@ -49,7 +49,7 @@ fn truncate(args: &[ColumnarValue], precision: i64) -> Result<Decimal128Array> {
         .map(|num| {
             num.map(|num| {
                 let factor = 10i128.pow((s - precision as i8).max(0) as u32);
-                
+
                 num / factor * factor
             })
         })
