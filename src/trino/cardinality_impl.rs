@@ -42,7 +42,9 @@ fn cardinality_array_3_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
 fn cardinality_array_3_return_type(arg_types: &[DataType]) -> Result<DataType> {
     match arg_types[0] {
         DataType::List(_) => Ok(DataType::UInt64),
-        _ => Err(DataFusionError::Plan("The cardinality function only accepts List.".to_string())),
+        _ => Err(DataFusionError::Plan(
+            "The cardinality function only accepts List.".to_string(),
+        )),
     }
 }
 

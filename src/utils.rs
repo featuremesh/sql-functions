@@ -268,7 +268,7 @@ pub trait KernelLifter {
                 Some(lst) => {
                     let typ_lst = lst.as_boolean();
                     if typ_lst.null_count() > 0 {
-                        None// A Trino quirk? If a NULL is present, array_min,max are NULL.
+                        None // A Trino quirk? If a NULL is present, array_min,max are NULL.
                     } else {
                         Self::boolean_kernel(typ_lst)
                     }

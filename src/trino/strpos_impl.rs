@@ -17,26 +17,20 @@
 
 #![allow(non_camel_case_types)]
 use arrow::datatypes::DataType;
+use arrow::datatypes::DataType::Int64;
 use datafusion::common::Result;
 use datafusion::error::DataFusionError;
+use datafusion::functions::unicode::strpos;
 use datafusion::logical_expr::simplify::{ExprSimplifyResult, SimplifyInfo};
 use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Volatility};
 use std::any::Any;
 
-fn strpos_varchar_varchar_invoke(_args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+fn strpos_varchar_varchar_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
+    strpos().invoke(args)
 }
 
 fn strpos_varchar_varchar_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+    Ok(Int64)
 }
 
 fn strpos_varchar_varchar_simplify(
@@ -55,11 +49,7 @@ fn strpos_varchar_varchar_bigint_invoke(_args: &[ColumnarValue]) -> Result<Colum
 }
 
 fn strpos_varchar_varchar_bigint_return_type(_arg_types: &[DataType]) -> Result<DataType> {
-    Err(DataFusionError::NotImplemented(format!(
-        "Not implemented {}:{}",
-        file!(),
-        line!()
-    )))
+    Ok(Int64)
 }
 
 fn strpos_varchar_varchar_bigint_simplify(
