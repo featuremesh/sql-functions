@@ -26,7 +26,7 @@ use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Vo
 use std::any::Any;
 
 fn strpos_varchar_varchar_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    strpos().invoke(args)
+    strpos().invoke_batch(args, 1)
 }
 
 fn strpos_varchar_varchar_return_type(_arg_types: &[DataType]) -> Result<DataType> {
