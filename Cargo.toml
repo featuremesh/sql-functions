@@ -37,10 +37,8 @@ default = ["trino_expressions"]
 trino_expressions = []
 
 [dependencies]
-datafusion = { version = "43.0.0" }
+datafusion = { version = "43.0.0", default-features = false, features = [] }
 arrow = { version = "53.3.0", features = ["prettyprint"] }
-#arrow-flight = { workspace = true }
-#arrow-schema = { workspace = true }
 tokio = "1.42.0"
 chrono = "0.4"
 chrono-tz = "0.10"
