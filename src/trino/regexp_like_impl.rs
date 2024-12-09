@@ -32,7 +32,7 @@ fn regexp_like_varchar_joniregexp_invoke(args: &[ColumnarValue]) -> Result<Colum
     let pattern = distinct_to_string_array(&args[1])?;
 
     let args = vec![value, Arc::new(pattern)];
-    let array = regexp_like::<i32>(&args)?;
+    let array = regexp_like(&args)?;
     Ok(ColumnarValue::Array(array))
 }
 

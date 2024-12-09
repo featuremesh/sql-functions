@@ -27,8 +27,8 @@ use datafusion::common::cast::{as_fixed_size_list_array, as_string_array};
 use datafusion::common::{Result, ScalarValue};
 use datafusion::error::DataFusionError;
 use datafusion::logical_expr::{ColumnarValue, ScalarFunctionImplementation};
-use datafusion::physical_expr::functions::Hint;
 use std::sync::Arc;
+use datafusion::logical_expr::function::Hint;
 
 /// Creates a scalar function implementation for the given function.
 /// * `inner` - the function to be executed

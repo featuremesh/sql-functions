@@ -24,7 +24,7 @@ use datafusion::logical_expr::{ColumnarValue, Expr, ScalarUDFImpl, Signature, Vo
 use std::any::Any;
 
 fn exp_double_invoke(args: &[ColumnarValue]) -> Result<ColumnarValue> {
-    exp().invoke(args)
+    exp().invoke_batch(args, 1)
 }
 
 fn exp_double_return_type(arg_types: &[DataType]) -> Result<DataType> {
