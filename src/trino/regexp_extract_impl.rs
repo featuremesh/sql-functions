@@ -37,7 +37,7 @@ fn regexp_extract_varchar_joniregexp_invoke(args: &[ColumnarValue]) -> Result<Co
     let pattern = distinct_to_string_array(&args[1])?;
 
     let arrays = vec![value, Arc::new(pattern)];
-    let result = regexp_match::<i32>(&arrays)?;
+    let result = regexp_match(&arrays)?;
     let result = as_list_array(result.as_ref())?;
     let result = result
         .iter()
