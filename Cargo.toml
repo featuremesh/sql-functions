@@ -37,12 +37,9 @@ default = ["trino_expressions"]
 trino_expressions = []
 
 [dependencies]
-datafusion = { version = "43.0.0", default-features = false, features = [] }
-arrow = { version = "53.3.0", features = ["prettyprint"] }
-tokio = "1.42.0"
-chrono = "0.4"
-chrono-tz = "0.10"
+datafusion = { version = "45.0.0", default-features = false, features = [] }
+arrow = { version = "54.2.0", features = ["prettyprint"] }
+chrono = { version = "0.4.34", default-features = false }
 regex = "1.11"
-log = "0.4.22"
-rust-embed = "8.5.0"
+rust-embed = "8.6.0"
 humantime = "2.1.0"
